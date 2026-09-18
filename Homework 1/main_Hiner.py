@@ -50,6 +50,10 @@ patient.filter_patients(patients, "Female", "Dementia")
 
 import numpy as np
 import matplotlib.pyplot as plt
+from scipy import stats
+import statistics
+import pandas as pd
+
 
 female_dementia_age = []
 male_dementia_age = []
@@ -66,6 +70,10 @@ for p in patients:
 
         female_std = np.std(female_dementia_age, ddof=1)
         male_std = np.std(male_dementia_age, ddof=1)
+# Run independent t-test
+t_stat, p_value = stats.ttest_ind(
+    female_dementia_age, male_dementia_age, equal_var=False)
+print(f't_stat = {t_stat}, p_value = {p_value}')
 #creates a bar graph comparing the mean age at dementia for female and male patients 
 plt.bar(
     ["Female", "Male"],
