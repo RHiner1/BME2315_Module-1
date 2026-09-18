@@ -12,7 +12,7 @@ import csv
 
 patients = []
 #creates patient objects from the csv file and appends them to the patients list
-with open(r"C:\Users\reill\OneDrive - University of Virginia\BME2315\Module 1\Homework 1\Metadata and Protein Data for Module 1.csv", newline="") as f:
+with open(r"C:\Users\reill\OneDrive - University of Virginia\BME2315\Module 1\BME2315_Module-1\BME2315_Module-1\Homework 1\Metadata and Protein Data for Module 1.csv", newline="") as f:
     reader = csv.reader(f)
     next(reader)  # skips the header row
     for row in reader:
@@ -24,10 +24,10 @@ with open(r"C:\Users\reill\OneDrive - University of Virginia\BME2315\Module 1\Ho
         yrs_ed = float(row[15])
         genotype = row[16]
         cog_stat = row[17]
-        onset_age = int(row[19]) if row[19] else None
-        age_dementia = (row[20])
-        injury = row[21] if row[21] else None
-        pH = float(row[39])
+        onset_age = int(row[18]) if row[18] else None
+        age_dementia = int(row[19]) if row[19] else None
+        injury = row[20] if row[20] else None
+        pH = float(row[32])
 
         new_patient = patient(ID, age, sex, education, yrs_ed, genotype, cog_stat, onset_age, age_dementia, injury, pH)
 
@@ -55,17 +55,17 @@ female_dementia_age = []
 male_dementia_age = []
 
 for p in patients:
-    if p.cog_stat == "Dementia" and p.age_dementia != "No" and p.age_dementia != "":
+    if p.cog_stat == "Dementia" and p.age_dementia is not None:
         if p.sex == "Female":
             female_dementia_age.append(p.age_dementia)
         elif p.sex == "Male":
             male_dementia_age.append(p.age_dementia)
 
-female_mean = np.mean(female_dementia_age)
-male_mean = np.mean(male_dementia_age)
+        female_mean = np.mean(female_dementia_age)
+        male_mean = np.mean(male_dementia_age)
 
-female_std = np.std(female_dementia_age, ddof=1)
-male_std = np.std(male_dementia_age, ddof=1)
+        female_std = np.std(female_dementia_age, ddof=1)
+        male_std = np.std(male_dementia_age, ddof=1)
 #creates a bar graph comparing the mean age at dementia for female and male patients 
 plt.bar(
     ["Female", "Male"],
