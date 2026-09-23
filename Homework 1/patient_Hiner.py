@@ -1,7 +1,7 @@
 import csv
 #defines class patient with attributes ID, age, sex, education, yrs_ed, genotype, cog_stat, onset_age, age_dementia, injury, and pH
 class patient:
-    def __init__(self, ID: str, age: float, sex: str, education: str, yrs_ed: float, genotype: str, cog_stat: str, onset_age: int, age_dementia: int, injury: str, pH: float): 
+    def __init__(self, ID: str, age: float, sex: str, education: str, yrs_ed: float, genotype: str, cog_stat: str, onset_age: int, age_dementia: int, injury: str, pH: float, ): 
         self.ID = ID
         self.age = age
         self.sex = sex

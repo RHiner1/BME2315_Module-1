@@ -53,6 +53,7 @@ import matplotlib.pyplot as plt
 from scipy import stats
 import statistics
 import pandas as pd
+from sklearn.linear_model import LinearRegression
 
 
 female_dementia_age = []
@@ -89,12 +90,27 @@ plt.show()
 age_values = []
 pH_values = []
 #iterates through the patients list and appends the age and pH values of each patient to the respective lists, then creates a scatter plot of age vs. pH
+
 for p in patients:
     age_values.append(p.age)
     pH_values.append(p.pH)
-plt.scatter(age_values, pH_values)
 
+age_values = np.array(age_values).reshape(-1, 1)
+pH_values = np.array(pH_values)
+
+model = LinearRegression()
+model.fit(age_values,pH_values)
+
+
+
+plt.scatter(age_values, pH_values)
+plt.plot(age_values, model.predict(age_values), color='red', linewidth=2) 
 plt.xlabel("Age")
 plt.ylabel("pH")
 plt.title("Age vs. pH")
 plt.show()
+
+
+
+f_stat, p_value = stats.f_oneway(female_dementia_age, male_dementia_age, age_values, pH_values)
+print(f'F-statistic = {f_stat}, p-value = {p_value}')
