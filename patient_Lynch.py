@@ -2,17 +2,19 @@ import csv
 class Patient:
     all_patients = []
     #constructor for patient, containing donorID, sex, whether or not they have dementia, apoe genotype, age of death, and years of education
-    def __init__(self, donorID:str, sex: str, diagnosis: str, apoe: str, deathage: int, educationyears: int):
+    def __init__(self, donorID:str, sex: str, diagnosis: str, apoe: str, deathage: int, educationyears: int, onsetage: int, brainweight: int):
         self.donorID = donorID
         self.sex = sex
         self.diagnosis = diagnosis
         self.apoe = apoe
         self.deathage = deathage
         self.educationyears = educationyears
+        self.onsetage = onsetage
+        self.brainweight = brainweight
         Patient.all_patients.append(self)
     #representor for patient
     def __repr__(self):
-        return f"{self.donorID}: ({self.sex} | {self.diagnosis} | {self.apoe} | {self.deathage} | {self.educationyears})"
+        return f"{self.donorID}: ({self.sex} | {self.diagnosis} | {self.apoe} | {self.onsetage} | {self.educationyears})"
 
     def getAge(self):
         return self.deathage
@@ -23,14 +25,14 @@ class Patient:
             reader = csv.DictReader(f)
             rows_of_patients = list(reader)
             for row in rows_of_patients:
-                Patient(donorID = row['Donor ID'], sex = row['Sex'], diagnosis = row['Cognitive Status'], apoe = row['APOE Genotype'], deathage = int(row['Age at Death']), educationyears = int(row['Years of education']))
+                Patient(donorID = row['Donor ID'], sex = row['Sex'], diagnosis = row['Cognitive Status'], apoe = row['APOE Genotype'], deathage = int(row['Age at Death']), educationyears = int(row['Years of education']), onsetage = int(row['Age of onset cognitive symptoms'].strip()) if row['Age of onset cognitive symptoms'].strip() else None, brainweight = int(row['Fresh Brain Weight']) if row['Fresh Brain Weight'] != "Unavailable" else None)
     #filters list of patients by sex, diagnosis, and/or apoe genotype
     @classmethod
-    def filter(cls, list, sex:str = "any", diagnosis:str = "any", apoe:str = "any"):
+    def filter(cls, list, sex:str = "any", diagnosis:str = "any", apoe:str = "any", onsetage = "any"):
         all_patients = list
         remove_list = []
-        attr_list = (sex, diagnosis, apoe)
-        attr_name = ("sex", "diagnosis", "apoe")
+        attr_list = (sex, diagnosis, apoe, onsetage)
+        attr_name = ("sex", "diagnosis", "apoe", "onsetage")
         for attr in range(len(attr_list)):
             if attr_list[attr] != "any":
                 for patient in all_patients:
