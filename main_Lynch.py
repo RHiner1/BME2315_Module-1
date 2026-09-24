@@ -56,8 +56,7 @@ Patient_apoe_cols = ['3_3 Genotype', '3_4 Genotype']
 mean_apoe = [x_3_3_bar, x_3_4_bar]
 stdev_apoe = [age_3_3_stdev, age_3_4_stdev]
 yerr = [np.zeros(len(mean_apoe)), stdev_apoe]
-t_stat, p_val = stats.ttest_ind(three_3, three_4)
-print(f't_stat = {t_stat}, p_val = {p_val}')
+
 
 f_stat, p_value = stats.f_oneway(three_3, three_4, two_2, two_3, two_4, four_4)
 print(f'F-statistic: {f_stat}, p-value: {p_value}')
@@ -126,7 +125,62 @@ Patient_dementia_cols = ['Dementia', 'No Dementia']
 mean_age = [dementia_mean, noDementia_mean]
 stdev_age = [dementia_stdev, noDementia_stdev]
 yerr = [np.zeros(len(mean_age)), stdev_age]
+t_stat, p_val = stats.ttest_ind(dementiaPatient, noDementiaPatient)
+print(f't_stat = {t_stat}, p_val = {p_val}')
+
 plt.bar(Patient_dementia_cols, mean_age, yerr=yerr, capsize=10, color=["blue", "orange"])
 plt.title("Average Years of Education for Dementia Patients vs. Non-Dementia Patients")
 plt.ylabel("Years of Education")
+plt.show()
+
+testedpatients = [patient for patient in Patient.all_patients if patient.mmse is not None]
+
+highschool = []
+tradeschool = []
+bachelors = []
+graduate = []
+professional = []
+
+for patient in Patient.filter(Patient.all_patients, educationlevel = "High School"):
+    if patient.mmse is not None:
+        highschool.append(patient.mmse)
+for patient in Patient.filter(Patient.all_patients, educationlevel = "Trade School/ Tech School"):
+    if patient.mmse is not None:
+        tradeschool.append(patient.mmse)
+for patient in Patient.filter(Patient.all_patients, educationlevel = "Bachelors"):
+    if patient.mmse is not None:
+        bachelors.append(patient.mmse)
+for patient in Patient.filter(Patient.all_patients, educationlevel = "Graduate (PhD/Masters)"):
+    if patient.mmse is not None:
+        graduate.append(patient.mmse)
+for patient in Patient.filter(Patient.all_patients, educationlevel = "Professional"):
+    if patient.mmse is not None:
+        professional.append(patient.mmse)
+
+highschool_mean = statistics.mean(highschool)
+tradeschool_mean = statistics.mean(tradeschool)
+bachelors_mean = statistics.mean(bachelors)
+graduate_mean = statistics.mean(graduate)
+professional_mean = statistics.mean(professional)
+highschool_stdev = statistics.stdev(highschool)
+tradeschool_stdev = statistics.stdev(tradeschool)
+bachelors_stdev = statistics.stdev(bachelors)
+graduate_stdev = statistics.stdev(graduate)
+professional_stdev = statistics.stdev(professional)
+
+mean_mmse = [highschool_mean, tradeschool_mean, bachelors_mean, graduate_mean, professional_mean]
+stdev_mmse = [highschool_stdev, tradeschool_stdev, bachelors_stdev, graduate_stdev, professional_stdev]
+yerr = [np.zeros(len(mean_mmse)), stdev_mmse]
+
+f_stat, p_value = stats.f_oneway(highschool, tradeschool, bachelors, graduate, professional)
+print("F-statistic:", f_stat)
+print("p-value:", p_value)
+
+
+educationlevel_cols = ['High School', 'Trade School/Tech School', 'Bachelors Degree', 'Graduate Degree', 'Professional Degree']
+plt.bar(educationlevel_cols, mean_mmse, yerr=yerr, capsize=10, color=["red", "green", "blue", "orange", "purple"])
+plt.title("Highest Level of Education vs. Last MMSE Score")
+plt.xlabel("Highest Level of Education")
+plt.ylabel("Last MMSE Score")
+plt.xticks(fontsize = 6)
 plt.show()

@@ -2,7 +2,7 @@ import csv
 class Patient:
     all_patients = []
     #constructor for patient, containing donorID, sex, whether or not they have dementia, apoe genotype, age of death, and years of education
-    def __init__(self, donorID:str, sex: str, diagnosis: str, apoe: str, deathage: int, educationyears: int, onsetage: int, brainweight: int):
+    def __init__(self, donorID:str, sex: str, diagnosis: str, apoe: str, deathage: int, educationyears: int, onsetage: int, brainweight: int, educationlevel: str, mmse: int):
         self.donorID = donorID
         self.sex = sex
         self.diagnosis = diagnosis
@@ -11,6 +11,9 @@ class Patient:
         self.educationyears = educationyears
         self.onsetage = onsetage
         self.brainweight = brainweight
+        self.educationlevel = educationlevel
+        self.mmse = mmse
+
         Patient.all_patients.append(self)
     #representor for patient
     def __repr__(self):
@@ -25,14 +28,14 @@ class Patient:
             reader = csv.DictReader(f)
             rows_of_patients = list(reader)
             for row in rows_of_patients:
-                Patient(donorID = row['Donor ID'], sex = row['Sex'], diagnosis = row['Cognitive Status'], apoe = row['APOE Genotype'], deathage = int(row['Age at Death']), educationyears = int(row['Years of education']), onsetage = int(row['Age of onset cognitive symptoms'].strip()) if row['Age of onset cognitive symptoms'].strip() else None, brainweight = int(row['Fresh Brain Weight']) if row['Fresh Brain Weight'] != "Unavailable" else None)
+                Patient(donorID = row['Donor ID'], sex = row['Sex'], diagnosis = row['Cognitive Status'], apoe = row['APOE Genotype'], deathage = int(row['Age at Death']), educationyears = int(row['Years of education']), onsetage = int(row['Age of onset cognitive symptoms'].strip()) if row['Age of onset cognitive symptoms'].strip() else None, brainweight = int(row['Fresh Brain Weight']) if row['Fresh Brain Weight'] != "Unavailable" else None, educationlevel = row['Highest level of education'], mmse = int(row['Last MMSE Score'].strip()) if row['Last MMSE Score'].strip() else None)
     #filters list of patients by sex, diagnosis, and/or apoe genotype
     @classmethod
-    def filter(cls, list, sex:str = "any", diagnosis:str = "any", apoe:str = "any", onsetage = "any"):
+    def filter(cls, list, sex:str = "any", diagnosis:str = "any", apoe:str = "any", onsetage = "any", educationlevel = "any"):
         all_patients = list
         remove_list = []
-        attr_list = (sex, diagnosis, apoe, onsetage)
-        attr_name = ("sex", "diagnosis", "apoe", "onsetage")
+        attr_list = (sex, diagnosis, apoe, onsetage, educationlevel)
+        attr_name = ("sex", "diagnosis", "apoe", "onsetage", "educationlevel")
         for attr in range(len(attr_list)):
             if attr_list[attr] != "any":
                 for patient in all_patients:
