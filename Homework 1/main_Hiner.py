@@ -104,7 +104,7 @@ model.fit(age_values,pH_values)
 
 
 plt.scatter(age_values, pH_values)
-plt.plot(age_values, model.predict(age_values), color='red', linewidth=2) 
+plt.plot(age_values, model.fit(age_values), color='red', linewidth=2) 
 plt.xlabel("Age")
 plt.ylabel("pH")
 plt.title("Age vs. pH")
