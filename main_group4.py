@@ -1,3 +1,4 @@
+#import the necessary functions and data
 from patient_Lynch import *
 import matplotlib.pyplot as plt
 from scipy import stats
@@ -7,13 +8,14 @@ import pandas as pd
 import sklearn
 from sklearn.linear_model import LinearRegression
 
+#location of data file
 Patient.instantiate_from_csv(r"C:\Users\reill\OneDrive - University of Virginia\BME2315\Module 1\BME2315_Module-1\BME2315_Module-1\Metadata and Protein Data for Module 1.csv")
 
 """
 Creates a list of ages of death and years of education
 for each patient. Compares the two on a scatterplot
 """
-
+#creates empty list and iterates over each patient in dataset
 patient_deathage = []
 patient_educationyears = []
 for patient in Patient.all_patients:
@@ -24,6 +26,7 @@ for patient in Patient.all_patients:
 X = np.array(patient_educationyears).reshape(-1,1)
 y = np.array(patient_deathage)
 
+#models a linear regression on the data
 model = LinearRegression()
 model.fit(X,y)
 
@@ -31,7 +34,7 @@ slope = model.coef_[0]
 intercept = model.intercept_
 r2 = model.score(X, y)
 
-# Annotate equation
+# Annotate equation and plot line
 equation = f"y = {slope:.2f}x + {intercept:.2f}\nR² = {r2:.2f}"
 plt.text(X.max(), y.max(), equation, color="red", fontsize=12, verticalalignment='top')
 
@@ -42,15 +45,18 @@ plt.ylabel('Age of Death')
 plt.title('Scatter Plot of Years of Education vs. Age of Death')
 plt.show()
 
+#creates empty list of variables
 patients_with_onset = [patient for patient in Patient.all_patients if patient.onsetage is not None]
 patient_educationyears_filtered = []
 patient_onsetage = []
 
+#iterates over each patient in the data set and adds relevant information to lists above
 for patient in patients_with_onset:
     patient_educationyears_filtered.append(patient.educationyears)
 for patient in patients_with_onset:
     patient_onsetage.append(patient.onsetage)
 
+#reshapes data on scatterplot and creates a line of best fit
 a = np.array(patient_educationyears_filtered).reshape(-1,1)
 b = np.array(patient_onsetage)
 
@@ -61,7 +67,7 @@ slope = model.coef_[0]
 intercept = model.intercept_
 r2 = model.score(a, b)
 
-# Annotate equation
+# Annotate equation and plot line
 equation = f"y = {slope:.2f}x + {intercept:.2f}\nR² = {r2:.2f}"
 plt.text(a.max(), b.max(), equation, color="red", fontsize=12, verticalalignment='top')
 
@@ -72,6 +78,7 @@ plt.ylabel('Age of onset cognitive symptoms')
 plt.title('Years of education vs. Age of onset cognitive symptoms')
 plt.show()
 
+#creates empty list, iterate over each patient in data set, statistical analysis for mean and standard deviation
 dementiaPatient = []
 noDementiaPatient = []
 for patient in Patient.filter(Patient.all_patients, diagnosis = "Dementia"):
@@ -88,14 +95,18 @@ Patient_dementia_cols = ['Dementia', 'No Dementia']
 mean_age = [dementia_mean, noDementia_mean]
 stdev_age = [dementia_stdev, noDementia_stdev]
 yerr = [np.zeros(len(mean_age)), stdev_age]
+
+#returns p value and t statistic of data
 t_stat, p_val = stats.ttest_ind(dementiaPatient, noDementiaPatient)
 print(f't_stat = {t_stat}, p_val = {p_val}')
 
+#plot above information on bar graph
 plt.bar(Patient_dementia_cols, mean_age, yerr=yerr, capsize=10, color=["blue", "orange"])
 plt.title("Average Years of Education for Dementia Patients vs. Non-Dementia Patients")
 plt.ylabel("Years of Education")
 plt.show()
 
+#creates empty lists for each potential education level and mmse score
 testedpatients = [patient for patient in Patient.all_patients if patient.mmse is not None]
 
 highschool = []
@@ -104,6 +115,7 @@ bachelors = []
 graduate = []
 professional = []
 
+#iterates over each patient in the data set and adds information to lists
 for patient in Patient.filter(Patient.all_patients, educationlevel = "High School"):
     if patient.mmse is not None:
         highschool.append(patient.mmse)
@@ -120,6 +132,7 @@ for patient in Patient.filter(Patient.all_patients, educationlevel = "Profession
     if patient.mmse is not None:
         professional.append(patient.mmse)
 
+#conducts statistical analysis on data
 highschool_mean = statistics.mean(highschool)
 tradeschool_mean = statistics.mean(tradeschool)
 bachelors_mean = statistics.mean(bachelors)
@@ -135,11 +148,12 @@ mean_mmse = [highschool_mean, tradeschool_mean, bachelors_mean, graduate_mean, p
 stdev_mmse = [highschool_stdev, tradeschool_stdev, bachelors_stdev, graduate_stdev, professional_stdev]
 yerr = [np.zeros(len(mean_mmse)), stdev_mmse]
 
+#returns p value and f statistic of data
 f_stat, p_value = stats.f_oneway(highschool, tradeschool, bachelors, graduate, professional)
 print("F-statistic:", f_stat)
 print("p-value:", p_value)
 
-
+#creates a bar graph and annotates
 educationlevel_cols = ['High School', 'Trade School/Tech School', 'Bachelors Degree', 'Graduate Degree', 'Professional Degree']
 plt.bar(educationlevel_cols, mean_mmse, yerr=yerr, capsize=10, color=["red", "green", "blue", "orange", "purple"])
 plt.title("Highest Level of Education vs. Last MMSE Score")
